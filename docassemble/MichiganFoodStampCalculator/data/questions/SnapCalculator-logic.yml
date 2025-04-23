@@ -1,0 +1,107 @@
+---
+metadata:
+  title: |
+    Maine SNAP Benefits Estimator
+  short title: |
+    ME SNAP Benefits Estimator
+  description: |
+    The Maine SNAP calculator is built to be used by people familiar with the basic SNAP rules to estimate the monthly SNAP benefit amount a household may receive in Maine. This tool is built upon the work of Mass Legal Services and their MA SNAP Calculator 
+  #exit url: https://www.masslegalservices.org/content/online-snap-calculator
+  show login: False
+---
+include: 
+  - docassemble.AssemblyLine:assembly_line.yml
+  - custom_ptla_theme_ngb.yml
+---
+default screen parts:
+  footer: |
+    [:share-alt-square: Share](${ url_ask([{'undefine': ['al_sharing_type','al_how_share_link']}, 'al_share_form_screen', {'recompute': ['al_did_share_form']}, 'al_share_results']) })
+    [:info-circle: About](${ url_action('about_this_interview') })
+    [:comment-dots: Feedback](https://forms.office.com/Pages/ResponsePage.aspx?id=gOsuS1HkzESOjJ_IxTUKuMd_2zPCiBNIvwzVGRoYK5FUODI0TzlKNUNYSTQwVlVOUjFaVlVNVk8wTy4u){:target="_blank"}
+---
+features:
+  question back button: True
+  navigation back button: False
+  # theme file downloaded from: bootstrap theme: https://bootswatch.com/cerulean/bootstrap.min.css
+  css:
+    - ptlatheme.css
+    #- colors.css
+    #- bootstrap.min.css
+  #hide navbar: True 
+  debug: False
+---
+modules:
+  - docassemble.base.core
+---
+include:
+  - SnapCalculator-parameters.yml
+  - SnapCalculator-questions.yml
+  - SnapCalculator-calculation.yml
+---
+mandatory: true
+code: |
+  #Question screen
+  al_intro_screen
+  set_progress(50)
+  HHSize
+  set_progress(75)
+  
+  #Print option screen
+  print_options
+  set_progress(100)
+  
+  #Final screen
+  if print_options['Summary'] == True or print_options['Details'] == True or print_options['Inputs'] == True:
+    downloadMe    
+  else:    
+    textOnly              
+
+---
+id: chose-no-download
+event: textOnly
+question: |
+  You have successfully completed the calculation. 
+subquestion: |  
+  You can user the "Back" button to revise your input, or restart a new interview. 
+buttons: 
+  - Exit: exit
+  - Restart: restart
+---
+id: chose-download
+event: downloadMe 
+question: |
+  You have successfully completed the calculation.<br /></br />
+  Download your results below.
+attachment:
+  name: SNAP Results 
+  filename: SNAP-Calculator-Results
+  valid formats:
+      - pdf
+  docx template file: 
+    code: |
+      finalFile
+buttons:
+  - Exit: exit
+  - Restart: restart  
+---
+code: |  
+  # Count number of selections
+  totalSelection = 0
+  if print_options['Summary']:
+    totalSelection += 1
+  if print_options['Details']:
+    totalSelection += 1
+  if print_options['Inputs']:
+    totalSelection += 1
+    
+  # define document template file 
+  if totalSelection >1 :
+    finalFile = "snap-all.docx"
+  elif print_options['Summary']:
+    finalFile= "snap-summary.docx"
+  elif print_options['Details']:        
+    finalFile = "snap-details.docx"
+  elif print_options['Inputs']:        
+    finalFile = "snap-dhhsInputs.docx"
+
+
