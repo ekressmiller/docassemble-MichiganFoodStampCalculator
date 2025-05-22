@@ -190,6 +190,8 @@ fields:
   - Household size: HHSize  
     datatype: integer    
   - Does the household include any members age 60+ or receiving a disability-based benefit?: ElderlyOrDisabled 
+    # I suggest adding a note or "auto term" or something similar here proving examples of 
+    # disability-based benefits, such as SSI, SSD, or Vetera's Disability. 
     input type: radio
     choices:
       - Yes
@@ -264,6 +266,8 @@ fields:
       
       Examples include but are not limited to: dental or medical care (including attendant care) costs not covered by insurance; prescription and over the counter medications; medical supplies; Medicare and other insurance premiums; food and vet bills for a trained service animal; dentures, hearing aids, and prosthetics; transportation and lodging costs to obtain medical treatment.
       
+    # I suggest adding a note or "auto term" or something similar here proving examples of 
+    # disability-based benefits, such as SSI, SSD, or Vetera's Disability. 
     show if:
       variable: ElderlyOrDisabled
       is: Yes
@@ -302,6 +306,8 @@ fields:
     show if:
       variable: isHomeless
       is: No  
+  # The below is for the standard heat and utility deduction. In the HotDocs version, this is
+  # only asked if the user does NOT pay rent or mortgage. 
   - Does the household have any heat or air conditioning costs (any time of year), or did your household get fuel assistance (like LIHEAP) in the last 12 months?: paysAC
     input type: radio
     choices:
